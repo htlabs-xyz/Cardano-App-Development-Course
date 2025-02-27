@@ -183,7 +183,3 @@ hoặc
     export default App;
     ```
     
-
----
-
----
