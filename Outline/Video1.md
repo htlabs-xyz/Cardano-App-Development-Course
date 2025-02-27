@@ -144,12 +144,3 @@
     
 
 ---
-
-## **Tổng kết**
-
-- HTML giúp xây dựng khung trang web.
-- CSS giúp trang web hiển thị đẹp hơn.
-- JavaScript giúp trang web trở nên tương tác và động.
-- Khi kết hợp cả ba công nghệ này, chúng ta có thể xây dựng một website hoàn chỉnh.
-
----
