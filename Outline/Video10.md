@@ -99,13 +99,3 @@
 - **CSS:**
     - Sử dụng tab hoặc grid để phân chia hai danh sách.
 
-**8. Kết luận và bài tập thực hành**
-
-- **Tóm tắt:**
-    - Quy trình thiết kế giao diện NFT Marketplace trên Cardano.
-    - Tích hợp ví và hiển thị dữ liệu NFT.
-- **Bài tập:**
-    - Thiết kế một <NFTCard /> component với CSS tùy chỉnh.
-    - Thêm sự kiện "Connect Wallet" và hiển thị số dư ADA trong header.
-- **Gợi ý nâng cao:**
-    - Tích hợp API Cardano (Blockfrost) để lấy danh sách NFT thực tế.
