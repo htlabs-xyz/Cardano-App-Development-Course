@@ -1,16 +1,16 @@
-1. **Nội dung chính**
+### Video 12: Writing Test Cases for Smart Contracts
 
 - **Lên kịch bản test** 
   - Phân tích từ hành động thực tế user tương tác từ giao diện: những thông tin như thế nào sẽ chuyển xuống hợp đồng
-  - Xác định luồng test chính: Người bán đăng bán &gt; Người mua ấn mua &gt; Người mua ấn offer &gt; Người bán ấn sell cho 1 offer
+  - Xác định luồng test chính: Người bán đăng bán &gt; Người mua ấn mua &gt; Người bán có thể cập nhật lại giá &gt; Người bán có thể lấy tại tài sản về được
   - Cách thức xây dựng kịch bản test: dựa trên các ràng buộc, các yếu tố gây nhiễu,..
   - Kịch bản happy-case: bao gồm những test có kết quả hiển nhiên phải đúng
   - Kịch bản other-case: bao gồm những trường hợp ít được tính đến
 - **Công cụ test, tổ chức test-case** 
   - Phân tích các tổ chức viết test cho các hàm, hợp đồng
   - import các thư viện cần dùng
-- **Test hợp đồng Offer** 
-  - Mô tả dạng dữ liệu sẽ truyền xuống hợp đồng
+- **Test hợp đồng** 
+  - Mô tả dữ liệu sẽ được đưa lên datum của hợp đồng
   - Từ kịch bản test, tạo file data test chứa dữ liệu cho test-case
   - Test với kịch bản happy-case
   - Test với kịch bản other-case
