@@ -1,7 +1,5 @@
 **1. Trình bày demo một NFT Marketplace thực tế trên Cardano**
 
----
-
 - Ví dụ thực tế: Sử dụng một nền tảng như **CNFT.io** hoặc **jpg.store** để minh họa.
 - Các bước trình diễn:
     - Kết nối ví Cardano (Nami, Eternl, hoặc Yoroi).
