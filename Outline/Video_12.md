@@ -1,0 +1,32 @@
+1. **Nội dung chính**
+
+- **Lên kịch bản test** 
+  - Phân tích từ hành động thực tế user tương tác từ giao diện: những thông tin như thế nào sẽ chuyển xuống hợp đồng
+  - Xác định luồng test chính: Người bán đăng bán &gt; Người mua ấn mua &gt; Người mua ấn offer &gt; Người bán ấn sell cho 1 offer
+  - Cách thức xây dựng kịch bản test: dựa trên các ràng buộc, các yếu tố gây nhiễu,..
+  - Kịch bản happy-case: bao gồm những test có kết quả hiển nhiên phải đúng
+  - Kịch bản other-case: bao gồm những trường hợp ít được tính đến
+- **Công cụ test, tổ chức test-case** 
+  - Phân tích các tổ chức viết test cho các hàm, hợp đồng
+  - import các thư viện cần dùng
+- **Test hợp đồng Offer** 
+  - Mô tả dạng dữ liệu sẽ truyền xuống hợp đồng
+  - Từ kịch bản test, tạo file data test chứa dữ liệu cho test-case
+  - Test với kịch bản happy-case
+  - Test với kịch bản other-case
+  - Nếu có lỗi phát sinh cần test các hàm gọi đến hoặc log ra các giá trị quan trọng
+- **Ghi chú lịch sử, kết quả test sau mỗi lần** 
+  - Mô tả
+  - Đầu vào
+  - Kết quả
+  - Lỗi: chỉ ra nguyên nhân
+  - Phương án khắc phục
+- **Tối ưu và sửa lỗi** 
+  - Chỉ ra những đoạn code thừa, gây lỗi
+  - Phân tích phương án tối ưu hơn
+  - Test lại để kiểm tra
+- **Kết thúc:** 
+  - Tóm tắt nội dung học
+  - Bài tập
+  - Hướng bài học tiếp theo Developing the Frontend Marketplace with Corresponding Functions
+  - Chuẩn bị cho bài kế tiếp
