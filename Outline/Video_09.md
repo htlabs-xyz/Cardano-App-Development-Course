@@ -11,17 +11,22 @@
 
 **2. Phân tích các chức năng cơ bản của NFT Marketplace trên Cardano**
 
-- **Liệt kê NFT (Listing):**
+- **List NFT:**
     - Quy trình: Người bán khóa NFT vào một hợp đồng (script address) với giá bán.
     - Yêu cầu kỹ thuật:
         - Tạo giao dịch với native asset (NFT) và gửi đến script.
         - Đảm bảo metadata của NFT (tên, mô tả, hình ảnh) được lưu trữ phù hợp.
-- **Hủy liệt kê NFT (Delisting):**
+- **Delist NFT:**
     - Quy trình: Người bán rút NFT từ script về ví cá nhân.
     - Yêu cầu kỹ thuật:
         - Xác minh quyền sở hữu thông qua UTxO và chữ ký.
         - Hủy bỏ trạng thái "đang bán" trong hợp đồng.
-- **Mua NFT (Buying):**
+- **Buy NFT:**
+    - Quy trình: Người mua gửi ADA đến script, NFT được mở khóa và chuyển về ví người mua.
+    - Yêu cầu kỹ thuật:
+        - Kiểm tra số dư ADA trong ví người mua.
+        - Chuyển NFT và thanh toán ADA trong cùng một giao dịch (atomic swap).
+- **Update Price:**
     - Quy trình: Người mua gửi ADA đến script, NFT được mở khóa và chuyển về ví người mua.
     - Yêu cầu kỹ thuật:
         - Kiểm tra số dư ADA trong ví người mua.
