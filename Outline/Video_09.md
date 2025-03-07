@@ -1,26 +1,31 @@
+# Video 9: Analyzing Ideas for an NFT Marketplace
+
 **1. Trình bày demo một NFT Marketplace thực tế trên Cardano**
 
 - Ví dụ thực tế: Sử dụng một nền tảng như **CNFT.io** hoặc **jpg.store** để minh họa.
-- Các bước trình diễn:
+  
+- Các bước trình bày:
     - Kết nối ví Cardano (Nami, Eternl, hoặc Yoroi).
     - Xem danh sách NFT, thực hiện mua hoặc liệt kê NFT.
+    
 - Điểm nổi bật trong demo:
     - Cách ví tích hợp với ứng dụng.
     - Trải nghiệm người dùng khi thực hiện giao dịch.
+
 - Câu hỏi dẫn dắt: "Các chức năng này được triển khai như thế nào trên Cardano?"
 
 **2. Phân tích các chức năng cơ bản của NFT Marketplace trên Cardano**
 
 - **List NFT:**
-    - Quy trình: Người bán khóa NFT vào một hợp đồng (script address) với giá bán.
+    - Quy trình: Người bán khóa NFT vào một hợp đồng (script address) với giá bán, địa chỉ người bán, policy_id, asset_name được định nghĩa trong datum.
     - Yêu cầu kỹ thuật:
         - Tạo giao dịch với native asset (NFT) và gửi đến script.
-        - Đảm bảo metadata của NFT (tên, mô tả, hình ảnh) được lưu trữ phù hợp.
+        - Đảm bảo datum của utxo có chứa NFT (policy id, asset name, price, seller address) được lưu trữ phù hợp.
 - **Delist NFT:**
     - Quy trình: Người bán rút NFT từ script về ví cá nhân.
     - Yêu cầu kỹ thuật:
         - Xác minh quyền sở hữu thông qua UTxO và chữ ký.
-        - Hủy bỏ trạng thái "đang bán" trong hợp đồng.
+        - Tài sản được đưa về ví của người bán.
 - **Buy NFT:**
     - Quy trình: Người mua gửi ADA đến script, NFT được mở khóa và chuyển về ví người mua.
     - Yêu cầu kỹ thuật:
