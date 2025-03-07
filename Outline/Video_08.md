@@ -18,6 +18,8 @@
     - Datums: Dữ liệu gắn liền với UTXO để lưu trữ trạng thái hợp đồng.
     - Redeemers: Dữ liệu cung cấp bởi người dùng để đáp ứng điều kiện của script.
 
+---
+
 **2. Aiken là gì?**
 
 - **Giới thiệu tổng quan và lịch sử**:
@@ -32,6 +34,8 @@
     - CBOR Hex:
         - Giải thích đây là định dạng mã hóa dữ liệu (Compact Binary Object Representation) được sử dụng để đưa smart contract lên blockchain.
         - Ý nghĩa: Đảm bảo tính nhỏ gọn và tương thích với node Cardano.
+
+---
 
 **3. Kỹ thuật lập trình với Aiken**
 
@@ -49,6 +53,8 @@
 - **Viết và chạy Unit Test**:
     - Tầm quan trọng của việc kiểm thử smart contract trước khi triển khai.
     - Sử dụng framework kiểm thử của Aiken: Viết test case, mô phỏng giao dịch, kiểm tra kết quả.
+
+---
 
 **4. Ví dụ và Demo thực tế**
 
