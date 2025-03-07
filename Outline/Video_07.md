@@ -1,3 +1,6 @@
+# Video 07: Minting/Burning Assets
+
+---
 
 **1. Những khái niệm cơ bản**
 
@@ -15,6 +18,8 @@
     - Đặc điểm: Không cần smart contract phức tạp, sử dụng native assets (tích hợp sẵn trong giao thức Cardano).
     - Chuẩn: Metadata dựa trên CIP-25 (Cardano Improvement Proposal), khác biệt với ERC-721/ERC-1155 của Ethereum.
     - Điểm nổi bật: Chi phí thấp, hiệu quả năng lượng, tính minh bạch.
+
+---
 
 **2. Đưa ra bài toán thực tế**
 
@@ -39,6 +44,8 @@
     - **Demo:**
         - Chuẩn bị code hoàn chỉnh, chạy trực quan: Chọn NFT → Nhấn "Burn" → Kiểm tra ví không còn NFT.
 
+---
+
 **3. Chuẩn bị trước khi code**
 
 - **Tài liệu cần tham khảo:**
@@ -54,6 +61,8 @@
     - Cài đặt MeshJS qua npm: npm install @meshjs/core @meshjs/react.
     - Kết nối ví thử nghiệm trên testnet Cardano (Preprod hoặc Preview).
 
+---
+
 **4. Thiết kế giao diện người dùng (UI)**
 
 - **Màn hình chính:**
@@ -62,6 +71,8 @@
 - **Yêu cầu giao diện:**
     - Responsive, đơn giản, dễ sử dụng.
     - Hiển thị trạng thái giao dịch (đang xử lý, thành công, lỗi).
+
+---
 
 **5. Code logic và kết nối Off-chain API**
 
@@ -87,6 +98,8 @@
 - **Xử lý lỗi:**
     - Kiểm tra số dư ADA trong ví đủ để trả phí.
     - Hiển thị thông báo lỗi nếu giao dịch thất bại.
+
+---
 
 **6. Kiểm thử chương trình**
 
