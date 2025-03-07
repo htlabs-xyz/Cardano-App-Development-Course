@@ -1,9 +1,15 @@
+# Video 02: Frontend framework and library 
+
+---
+
 ### **1. Khái niệm MPA (Multi-Page Application) là gì?**
 
 - Giải thích khái niệm MPA (ứng dụng nhiều trang) và cách hoạt động của nó.
 - Đặc điểm của MPA: mỗi lần chuyển trang, trình duyệt tải lại toàn bộ tài nguyên.
 - **Demo:** Tạo một trang web MPA đơn giản với HTML, CSS, JS (sử dụng nhiều file HTML liên kết với nhau).
 - Nhược điểm của MPA so với SPA: tốc độ tải chậm hơn do phải load lại trang.
+
+---
 
 ### **2. Khái niệm SPA (Single Page Application) là gì?**
 
