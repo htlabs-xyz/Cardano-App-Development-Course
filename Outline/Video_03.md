@@ -1,3 +1,6 @@
+# Video 03: Fullstacks framework
+
+---
 
 **1. Giới thiệu Next.js**
 
@@ -89,8 +92,6 @@
 - **Viết API đơn giản để lấy dữ liệu**
 - **Middleware xử lý request**
 - **Bảo mật API bằng NextAuth hoặc Middleware**
-
----
 
 ---
 
