@@ -1,6 +1,4 @@
-### Video 13: Developing the Frontend Marketplace with Corresponding Functions
-
-**Nội dung chính**
+# Video 13: Developing the Frontend Marketplace with Corresponding Functions
 
 - **Tổng quan**
 
