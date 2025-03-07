@@ -1,3 +1,7 @@
+# Video 08:  Introduction eUTxO model (datums, redeemers, etc.)
+
+---
+
 **1. Ôn tập về mô hình EUTxO (Extended Unspent Transaction Output)**
 
 - **Blocks & Transactions**:
