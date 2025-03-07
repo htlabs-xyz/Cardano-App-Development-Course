@@ -1,3 +1,7 @@
+# Video 06: Making transaction
+
+---
+
 - **Lý thuyết cơ sở**
     - **Giao dịch trên blockchain là gì?**
         - Định nghĩa cơ bản: Giao dịch là hành động chuyển giá trị (tiền, tài sản số) giữa các thực thể trên blockchain.
@@ -13,6 +17,8 @@
         - Khác biệt so với UTXO của Bitcoin: Mỗi UTxO có thể chứa dữ liệu bổ sung (datum) và logic hợp đồng thông minh.
         - So sánh với mô hình tài khoản (Account Model) của Ethereum: Deterministic hơn, dễ dự đoán chi phí.
         - Ưu điểm: Minh bạch, hiệu quả, bảo mật cao.
+---
+
 - **Đưa ra bài toán**
     - **Mô tả bài toán**: Tạo một ứng dụng đơn giản để chuyển ADA từ ví của người dùng (Owner) sang ví đích (Recipient).
         - Các đối tượng tham gia: Ví Owner, ví Recipient, mạng Cardano, MeshJS (thư viện hỗ trợ).
@@ -26,6 +32,9 @@
     - **Cách demo**
         - Chuẩn bị trước code hoàn chỉnh.
         - Demo trực quan: Hiển thị số dư trước/sau, kiểm tra giao dịch trên CardanoScan.
+
+---
+
 - **Chuẩn bị trước**
     - **Cài đặt ví trình duyệt**
         - Hỗ trợ: Nami, Eternl, hoặc Flint.
@@ -40,6 +49,9 @@
         - MeshJS (thư viện chính).
         - Node.js, npm (môi trường lập trình).
         - Framework UI (tùy chọn: React, Vue).
+
+---
+
 - **Tạo giao diện (UI)**
     - **Phần chọn ví và hiển thị số dư**
         - Dropdown/list để chọn ví (Nami, Eternl...).
@@ -47,6 +59,9 @@
     - **Phần nhập liệu và gửi giao dịch**
         - Ô nhập: Số ADA cần gửi, địa chỉ ví đích.
         - Nút “Gửi” để kích hoạt giao dịch.
+     
+--- 
+
 - **Code logic và kết nối Offchain API**
     - **Kết nối ví và hiển thị số dư**
         - API: MeshJS BrowserWallet (hàm enable() để kết nối ví).
@@ -60,6 +75,9 @@
         - Output: Transaction hash (txHash) sau khi gửi thành công.
         - Task blockchain: Tạo giao dịch → Ký bằng ví → Gửi lên mạng.
         - Debugging: Log txHash để kiểm tra trên CardanoScan.
+
+---
+
 - **Kiểm tra chương trình**
     - **Test giao dịch**
         - Kiểm tra số dư của ví Owner và Recipient trước/sau khi gửi.
