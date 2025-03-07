@@ -1,5 +1,7 @@
 # Video 9: Analyzing Ideas for an NFT Marketplace
 
+---
+
 **1. Trình bày demo một NFT Marketplace thực tế trên Cardano**
 
 - Ví dụ thực tế: Sử dụng một nền tảng như **CNFT.io** hoặc **jpg.store** để minh họa.
@@ -13,6 +15,8 @@
     - Trải nghiệm người dùng khi thực hiện giao dịch.
 
 - Câu hỏi dẫn dắt: "Các chức năng này được triển khai như thế nào trên Cardano?"
+
+---
 
 **2. Phân tích các chức năng cơ bản của NFT Marketplace trên Cardano**
 
@@ -37,6 +41,8 @@
         - Xác minh quyền sở hữu thông qua UTxO và chữ ký.
         - Đảm bảo datum của utxo có chứa NFT (policy id, asset name, price, seller address) được lưu trữ phù hợp.
 
+---
+
 **3. Phân tích logic của Validator theo từng chức năng**
 
 - **Validator trong Cardano:**
@@ -56,6 +62,13 @@
             - Xác minh người mua gửi đủ ADA theo giá đã định.
             - Đảm bảo NFT được chuyển từ script sang ví người mua.
             - Kiểm tra ADA được chuyển từ người mua sang người bán.
-- **Thách thức kỹ thuật:**
+    - **Update (Update NFT):**
+        - Điều kiện kiểm tra:
+            - Kiểm tra NFT chưa được mua bởi người khác.
+            - Xác minh quyền sở hữu thông qua UTxO và chữ ký.
+
+---
+
+- **4. Thách thức kỹ thuật:**
     - Cần thiết kế dữ liệu đi kèm (datum) và thông tin kích hoạt (redeemer) phù hợp.
     - Đảm bảo validator không quá phức tạp để tránh vượt giới hạn kích thước giao dịch.
