@@ -17,7 +17,7 @@
 **2. Phân tích các chức năng cơ bản của NFT Marketplace trên Cardano**
 
 - **List NFT:**
-    - Quy trình: Người bán khóa NFT vào một hợp đồng (script address) với giá bán, địa chỉ người bán, policy_id, asset_name được định nghĩa trong datum.
+    - Quy trình: Người bán gửi NFT vào một hợp đồng (smartcontract address) với giá bán, địa chỉ người bán, policy_id, asset_name được định nghĩa trong datum.
     - Yêu cầu kỹ thuật:
         - Tạo giao dịch với native asset (NFT) và gửi đến script.
         - Đảm bảo datum của utxo có chứa NFT (policy id, asset name, price, seller address) được lưu trữ phù hợp.
@@ -27,26 +27,26 @@
         - Xác minh quyền sở hữu thông qua UTxO và chữ ký.
         - Tài sản được đưa về ví của người bán.
 - **Buy NFT:**
-    - Quy trình: Người mua gửi ADA đến script, NFT được mở khóa và chuyển về ví người mua.
+    - Quy trình: Người mua gửi ADA đến người bán, NFT được mở khóa và gửi về cho người mua.
     - Yêu cầu kỹ thuật:
-        - Kiểm tra số dư ADA trong ví người mua.
-        - Chuyển NFT và thanh toán ADA trong cùng một giao dịch (atomic swap).
+        - Kiểm tra số dư ADA trong ví người mua (lớn hơn số tiền được định nghĩa trong datum).
+        - Chuyển NFT và thanh toán ADA trong cùng một giao dịch.
 - **Update Price:**
-    - Quy trình: Người mua gửi ADA đến script, NFT được mở khóa và chuyển về ví người mua.
+    - Quy trình: Người mua thực hiện update lại datum trong utxo chứa nft (chỉ bao gồm giá).
     - Yêu cầu kỹ thuật:
-        - Kiểm tra số dư ADA trong ví người mua.
-        - Chuyển NFT và thanh toán ADA trong cùng một giao dịch (atomic swap).
+        - Xác minh quyền sở hữu thông qua UTxO và chữ ký.
+        - Đảm bảo datum của utxo có chứa NFT (policy id, asset name, price, seller address) được lưu trữ phù hợp.
 
 **3. Phân tích logic của Validator theo từng chức năng**
 
 - **Validator trong Cardano:**
-    - Là script chạy trên-chain để kiểm tra tính hợp lệ của giao dịch dựa trên các điều kiện được định nghĩa trước.
+    - Là script chạy trên on-chain để kiểm tra tính hợp lệ của giao dịch dựa trên các điều kiện được định nghĩa trước.
     - Gắn với UTxO để kiểm soát các giao dịch cụ thể.
 - **Logic Validator cho từng chức năng:**
     - **Listing (Liệt kê NFT):**
         - Điều kiện kiểm tra:
             - Xác minh NFT được gửi từ ví của người bán hợp lệ.
-            - Đảm bảo giá bán được ghi rõ trong dữ liệu đi kèm UTxO.
+            - Đảm bảo giá bán được ghi rõ trong dữ liệu đi kèm UTxO là datum.
     - **Delisting (Hủy liệt kê):**
         - Điều kiện kiểm tra:
             - Chỉ cho phép người bán (chủ sở hữu ban đầu) rút NFT về ví.
