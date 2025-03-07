@@ -1,7 +1,5 @@
 ### Video 14: Finalizing and Deploying the Marketplace to Vercel
 
-- **Nội dung chính**
-
 - **Tổng quan dự án đã hoàn thiện** 
   - Nói qua về những chức năng đã làm, hợp đồng đã viết
   - Đánh giá mức độ hoàn thiện của dự án
