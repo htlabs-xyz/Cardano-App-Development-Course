@@ -1,3 +1,7 @@
+# Video 05: Query data onchain
+
+--
+
 **1. Nội dung chính**
 
 **Blockfrost là gì? ([https://blockfrost.dev](https://blockfrost.dev/))**
@@ -23,7 +27,9 @@
         - **Epochs**: Thông tin về các epoch trên Cardano.
         - **Transactions**: Quản lý giao dịch (bao gồm cả truy vấn và gửi giao dịch).
 
-**Giới thiệu module Accounts**
+---
+
+**2. Giới thiệu module Accounts**
 
 - **Tổng quan**: Cung cấp dữ liệu liên quan đến tài khoản stake trên Cardano (stake address), không phải địa chỉ ví thông thường.
 - **Các chức năng chính**:
@@ -32,7 +38,9 @@
     - GET /accounts/{stake_address}/delegations: Thông tin lịch sử ủy quyền (delegation).
 - **Ứng dụng**: Theo dõi hiệu suất staking hoặc phân tích tài khoản.
 
-**Giới thiệu module Addresses**
+---
+
+**3. Giới thiệu module Addresses**
 
 - **Tổng quan**: Tập trung vào việc truy vấn thông tin chi tiết về địa chỉ ví (payment address), bao gồm số dư và giao dịch liên quan.
 - **Các chức năng chính**:
@@ -41,7 +49,9 @@
     - GET /addresses/{address}/transactions: Lịch sử giao dịch liên quan.
 - **Ứng dụng**: Kiểm tra số dư ví, phân tích hoạt động giao dịch.
 
-**Giới thiệu module Assets**
+---
+
+**4. Giới thiệu module Assets**
 
 - **Tổng quan**: Cung cấp thông tin về các tài sản trên Cardano, bao gồm native tokens và NFT.
 - **Các chức năng chính**:
@@ -50,7 +60,9 @@
     - GET /assets/policy/{policy_id}: Lấy danh sách tài sản theo policy ID.
 - **Ứng dụng**: Theo dõi token, kiểm tra NFT hoặc phân tích metadata.
 
-**Giới thiệu module Transactions**
+---
+
+**5. Giới thiệu module Transactions**
 
 - **Tổng quan**: Quản lý dữ liệu giao dịch, từ truy vấn chi tiết đến gửi giao dịch mới lên blockchain.
 - **Các chức năng chính**:
@@ -59,7 +71,9 @@
     - POST /tx/submit: Gửi giao dịch đã ký lên mạng Cardano.
 - **Ứng dụng**: Tích hợp ví, xây dựng DApp hoặc theo dõi trạng thái giao dịch.
 
-**Cách đăng ký và sử dụng**
+---
+
+**6. Cách đăng ký và sử dụng**
 
 - **Quy trình đăng ký**:
     1. Truy cập [blockfrost.io](https://blockfrost.io/), tạo tài khoản.
@@ -71,7 +85,9 @@
     - Không hỗ trợ một số tính năng nâng cao như Webhooks (yêu cầu gói trả phí).
 - **Lưu ý**: Nâng cấp lên gói trả phí để tăng giới hạn và truy cập thêm tính năng.
 
-**Demo thực hành**
+---
+
+**7. Demo thực hành**
 
 - **Mục tiêu**: Query dữ liệu thực tế và so sánh với ví Cardano (ví dụ: Yoroi, Daedalus).
 - **Ví dụ thực hành**:
