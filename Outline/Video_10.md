@@ -1,3 +1,7 @@
+# Video 10: Designing the NFT Marketplace User Interface
+
+---
+
 **1. Nội dung chính**
 
 - **Giới thiệu mục tiêu:**
@@ -7,6 +11,8 @@
     - Trình bày wireframe/giao diện mẫu.
     - Khởi tạo dự án lập trình.
     - Thiết kế từng phần giao diện (Layout, Home, Details, Account).
+
+---
 
 **2. Show và mô tả wireframe hoặc giao diện trang web đã hoàn thiện**
 
@@ -23,6 +29,8 @@
 - **Trang Account:**
     - Hiển thị NFT của người dùng: danh sách đang bán và chưa bán.
 
+---
+
 **3. Khởi tạo dự án**
 
 - **Tạo dự án:**
@@ -38,6 +46,8 @@
     - Khởi tạo repository, push code lên GitHub.
     - Chuẩn bị cho bài cuối: triển khai trên Vercel.
 
+---
+
 **4. Thiết kế Layout**
 
 - **File xử lý:** Mở app/layout.tsx.
@@ -49,6 +59,8 @@
         - Thêm <main> với CSS linh hoạt (flexbox/grid) để chứa nội dung động.
     - **Footer:**
         - Component <Footer /> với các liên kết tĩnh.
+
+---
 
 **5. Thiết kế trang Home**
 
@@ -63,7 +75,9 @@
     - Tách <NFTCard /> thành component riêng để tái sử dụng.
     - CSS: Hover effect, shadow, border cho từng item.
 - **Dữ liệu:**
-    - Giả lập dữ liệu NFT (hardcode) hoặc lấy từ API Cardano (ví dụ: Blockfrost).
+    - Giả lập dữ liệu NFT (policy_id và asset_name) hoặc lấy từ API Cardano (ví dụ: Blockfrost).
+
+--- 
 
 **6. Thiết kế trang Details**
 
@@ -80,6 +94,8 @@
     - Tên, giá, metadata (thuộc tính NFT), lịch sử giao dịch (nếu có).
 - **CSS:**
     - Tùy chỉnh layout responsive, button styling.
+
+---
 
 **7. Thiết kế trang Account**
 
