@@ -75,10 +75,6 @@
       - Tạo schema của object là đầu vào là redeemer chứa các thông tin người mua
       - Viết hàm đọc và gọi đến hợp đồng
       - test mua của 1 addr khác và kiểm tra số tiền bị trừ và NFT trong ví
-    - Hành động ấn Make Offer 
-      - Tạo schema của object là đầu vào là datum chứa các thông tin người offer
-      - Viết hàm đọc và gọi đến hợp đồng
-      - test offer và kiểm tra thông tin đã offer có được cập nhật hay không
 
 ---
 
