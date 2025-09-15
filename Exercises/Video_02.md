@@ -1,6 +1,5 @@
 # 📘 Video 2: Frontend framework and library
 
----
 ## 📝 Bài tập 1: So sánh MPA và SPA
 
 ### Đề bài

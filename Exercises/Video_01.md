@@ -1,7 +1,5 @@
 # 📘 Video 1: Web3 and Web development Basic
 
----
-
 ## 📝 Bài tập 1: Trang giới thiệu bản thân (HTML)
 
 ### Đề bài
