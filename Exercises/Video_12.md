@@ -1,136 +1,181 @@
-# Video 12: Test & Offchain cho Marketplace Aiken
+# 🧩 Video 12: Writing Test Cases and Offchain Code for Smart Contracts
 
-## 📝 Bài tập 1 – Buy Successful
-
-### 🧭 Đề bài
-
-Viết test case để xác nhận rằng giao dịch **Buy** thành công khi người mua trả đủ ADA và chỉ có một script input.
-
-### 🎯 Yêu cầu
-
-- Chỉ 1 script input từ hợp đồng.
-- Tổng ADA gửi cho seller >= price + minAda.
-- Redeemer: `Buy`.
-
-### 💡 Cách giải (Gợi ý)
-
-- Dùng `mock_datum()` để tạo Datum.
-- Dùng `get_buy_tx(true, true)` để mô phỏng giao dịch hợp lệ.
-
-### ✅ Đáp án
-
-```aiken
-test buy_successful {
-  let datum = mock_datum()
-  let tx = get_buy_tx(true, true)
-  marketplace(datum, Buy, tx) == True
-}
-```
+## 🧠 Giới thiệu
+Phần này giúp bạn hiểu cách **kiểm thử validator logic của Aiken** và **xây dựng offchain code** trong Next.js để tương tác với smart contract.  
+Bạn sẽ thực hành viết **test case**, **mock giao dịch**, và **triển khai API backend** để mint/buy/withdraw NFT trên marketplace.
 
 ---
 
-## 📝 Bài tập 2 – Buy Fails with Multiple Inputs
+## 📝 Bài tập 1: Viết test cơ bản cho chức năng Buy
 
-### 🧭 Đề bài
+### Đề bài
+Tạo test kiểm tra điều kiện “Buy” của validator để xác minh người mua phải trả đủ ADA.
 
-Kiểm tra rằng giao dịch Buy bị từ chối nếu có nhiều script input (double-spend).
+### Yêu cầu
+- Tạo file `tests/marketplace_buy_test.ak`.  
+- Viết test cho trường hợp:
+  - Người mua trả đúng giá → ✅ PASS.  
+  - Người mua trả thiếu giá → ❌ FAIL.  
+- Sử dụng module `aiken/test` để chạy test.
 
-### 🎯 Yêu cầu
+### Cách giải
+1. Tạo thư mục `tests/` trong dự án Aiken.  
+2. Khai báo module test:
+   ```aiken
+   use aiken/test
 
-- Nhiều script input → vi phạm điều kiện.
-- Redeemer: `Buy`.
+   test buy_should_pass_when_paid_enough() {
+     let datum = MarketplaceDatum { seller: "addr_seller", price: 10000000, policy_id: "123", asset_name: "token" }
+     let tx = build_tx(paid_to_seller: 11000000)
+     expect is_buy_valid(tx, datum)
+   }
+   ```
 
-### 💡 Cách giải
+3. Viết thêm test fail khi trả thiếu:
+   ```aiken
+   test buy_should_fail_when_paid_less() {
+     let datum = MarketplaceDatum { seller: "addr_seller", price: 10000000, policy_id: "123", asset_name: "token" }
+     let tx = build_tx(paid_to_seller: 5000000)
+     expect !is_buy_valid(tx, datum)
+   }
+   ```
 
-- Dùng `get_buy_tx(false, true)` để mô phỏng nhiều input.
-
-### ✅ Đáp án
-
-```aiken
-test buy_fails_multiple_inputs {
-  let datum = mock_datum()
-  let tx = get_buy_tx(false, true)
-  !marketplace(datum, Buy, tx)
-}
+### Đáp án
+Chạy lệnh:
+```bash
+aiken test
 ```
+Kết quả hiển thị:  
+✅ `buy_should_pass_when_paid_enough` passed.  
+❌ `buy_should_fail_when_paid_less` failed (đúng như mong đợi).
 
 ---
 
-## 📝 Bài tập 3 – Buy Fails Underpriced
+## 📝 Bài tập 2: Viết test cho chức năng Withdraw/Update
 
-### 🧭 Đề bài
+### Đề bài
+Kiểm tra xem chỉ **seller** mới có thể thực hiện `WithdrawOrUpdate`.
 
-Test giao dịch Buy khi người mua không trả đủ ADA.
+### Yêu cầu
+- Test pass khi `seller` nằm trong `tx.signatories`.  
+- Test fail khi người ký khác không phải `seller`.
 
-### 🎯 Yêu cầu
-
-- ADA < price + minAda.
-- Redeemer: `Buy`.
-
-### 💡 Cách giải
-
-- Dùng `get_buy_tx(true, false)`.
-
-### ✅ Đáp án
-
+### Cách giải
 ```aiken
-test buy_fails_underpriced {
-  let datum = mock_datum()
-  let tx = get_buy_tx(true, false)
-  !marketplace(datum, Buy, tx)
+test withdraw_should_pass_for_seller() {
+  let datum = MarketplaceDatum { seller: "addr_seller", price: 10000000, policy_id: "123", asset_name: "token" }
+  let tx = build_tx(signatories: ["addr_seller"])
+  expect is_withdraw_valid(tx, datum)
+}
+
+test withdraw_should_fail_for_other_user() {
+  let datum = MarketplaceDatum { seller: "addr_seller", price: 10000000, policy_id: "123", asset_name: "token" }
+  let tx = build_tx(signatories: ["addr_buyer"])
+  expect !is_withdraw_valid(tx, datum)
 }
 ```
+
+### Đáp án
+Khi chạy `aiken test`, test thứ hai sẽ fail đúng logic, xác nhận validator chỉ cho phép seller rút/cập nhật NFT.
 
 ---
 
-## 📝 Bài tập 4 – Withdraw Successful by Seller
+## 📝 Bài tập 3: Test tổng hợp validator
 
-### 🧭 Đề bài
+### Đề bài
+Viết test gọi trực tiếp validator `marketplace` với cả hai loại redeemer (`Buy` và `WithdrawOrUpdate`).
 
-Kiểm tra khi seller thực hiện Withdraw hoặc Update thành công.
+### Yêu cầu
+- Test 1: Redeemer = `Buy`, người mua trả đủ ADA → ✅ PASS.  
+- Test 2: Redeemer = `WithdrawOrUpdate`, seller ký giao dịch → ✅ PASS.  
+- Test 3: Redeemer = `Buy`, người mua trả thiếu ADA → ❌ FAIL.
 
-### 🎯 Yêu cầu
-
-- Seller có trong `tx.signatories`.
-- Redeemer: `WithdrawOrUpdate`.
-
-### 💡 Cách giải
-
-- Dùng `get_withdraw_tx(true)`.
-
-### ✅ Đáp án
-
+### Cách giải
 ```aiken
-test withdraw_success_by_seller {
-  let datum = mock_datum()
-  let tx = get_withdraw_tx(true)
-  marketplace(datum, WithdrawOrUpdate, tx) == True
+test validator_should_validate_buy() {
+  let datum = MarketplaceDatum { seller: "addr_seller", price: 10000000, policy_id: "123", asset_name: "token" }
+  let tx = build_tx(paid_to_seller: 11000000)
+  let ctx = ScriptContext { tx }
+  expect marketplace(datum, Buy, ctx)
+}
+
+test validator_should_validate_withdraw() {
+  let datum = MarketplaceDatum { seller: "addr_seller", price: 10000000, policy_id: "123", asset_name: "token" }
+  let tx = build_tx(signatories: ["addr_seller"])
+  let ctx = ScriptContext { tx }
+  expect marketplace(datum, WithdrawOrUpdate, ctx)
 }
 ```
+
+### Đáp án
+Cả hai test đầu pass, test thứ ba fail → chứng minh validator hoạt động đúng theo logic mong đợi.
 
 ---
 
-## 📝 Bài tập 5 – Withdraw Fails – Wrong Signer
+## 📝 Bài tập 4: Tạo API Offchain cho giao dịch Buy
 
-### 🧭 Đề bài
+### Đề bài
+Tạo endpoint `/api/marketplace/buy` trong Next.js để build giao dịch mua NFT thông qua MeshJS.
 
-Kiểm tra Withdraw thất bại nếu người ký không phải seller.
+### Yêu cầu
+- Nhận dữ liệu từ client: `buyerAddress`, `sellerAddress`, `price`, `policyId`, `assetName`.  
+- Sử dụng `Transaction` của MeshJS để tạo giao dịch.  
+- Trả về `unsignedTx` cho client ký.
 
-### 🎯 Yêu cầu
+### Cách giải
+Tạo file `app/api/marketplace/buy/route.ts`:
+```ts
+import { NextResponse } from "next/server";
+import { Transaction } from "@meshsdk/core";
 
-- Không có seller trong chữ ký.
-- Redeemer: `WithdrawOrUpdate`.
-
-### 💡 Cách giải
-
-- Dùng `get_withdraw_tx(false)`.
-
-### ✅ Đáp án
-
-```aiken
-test withdraw_fails_wrong_signer {
-  let datum = mock_datum()
-  let tx = get_withdraw_tx(false)
-  !marketplace(datum, WithdrawOrUpdate, tx)
+export async function POST(request: Request) {
+  const { buyerAddress, sellerAddress, price, policyId, assetName } = await request.json();
+  try {
+    const tx = new Transaction();
+    tx.sendLovelace({ address: sellerAddress }, price);
+    tx.sendAssets({ address: buyerAddress }, [{ unit: `${policyId}${assetName}`, quantity: "1" }]);
+    const unsignedTx = await tx.build();
+    return NextResponse.json({ unsignedTx });
+  } catch (err) {
+    return NextResponse.json({ error: err.message }, { status: 500 });
+  }
 }
 ```
+
+### Đáp án
+Client gửi `POST /api/marketplace/buy`, server trả về `unsignedTx`, sau đó client ký và submit bằng `wallet.submitTx()`.
+
+---
+
+## 📝 Bài tập 5: Kết nối test onchain và offchain
+
+### Đề bài
+Tạo test case tích hợp để kiểm tra validator hoạt động đồng bộ giữa **Aiken logic** và **Next.js offchain API**.
+
+### Yêu cầu
+- Gọi API `/api/marketplace/buy`.  
+- Dùng script hash của validator để attach vào giao dịch.  
+- Gửi giao dịch testnet và kiểm tra `TxHash` trên [Cardanoscan](https://preprod.cardanoscan.io).
+
+### Cách giải
+1. Lấy script hash sau khi compile:
+   ```bash
+   aiken build
+   ```
+2. Trong API, thêm script hash:
+   ```ts
+   tx.attachSpendingValidator({ type: "PlutusV2", script: validatorCompiled });
+   ```
+3. Client ký và gửi giao dịch, kiểm tra `txHash` trả về.
+
+### Đáp án
+Nếu validator và offchain code hoạt động chính xác, `TxHash` xuất hiện trên Cardanoscan → xác minh thành công toàn bộ quy trình.
+
+---
+
+✅ **Tổng kết**
+Qua 5 bài tập này, bạn sẽ hiểu cách:
+- Viết test case Aiken cho từng hành vi logic.  
+- Mô phỏng tình huống giao dịch hợp lệ / không hợp lệ.  
+- Xây dựng API backend kết nối MeshJS và Aiken.  
+- Kiểm tra tích hợp end-to-end trên testnet.

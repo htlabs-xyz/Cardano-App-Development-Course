@@ -1,0 +1,23 @@
+name = "aiken-lang/aiken-nft-marketplace"
+version = "0.0.0"
+compiler = "v1.1.19"
+plutus = "v3"
+license = "Apache-2.0"
+description = "Aiken contracts for project 'aiken-lang/aiken-nft-marketplace'"
+
+[repository]
+user = "aiken-lang"
+project = "aiken-nft-marketplace"
+platform = "github"
+
+[[dependencies]]
+name = "aiken-lang/stdlib"
+version = "v2.2.0"
+source = "github"
+
+[[dependencies]]
+name = "sidan-lab/vodka"
+version = "0.1.16"
+source = "github"
+
+[config]
