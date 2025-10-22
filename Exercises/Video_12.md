@@ -1,181 +1,130 @@
-# 🧩 Video 12: Writing Test Cases and Offchain Code for Smart Contracts
+# 📘 Video 12: Writing Test Cases and Offchain Code for Smart Contracts
 
-## 🧠 Giới thiệu
-Phần này giúp bạn hiểu cách **kiểm thử validator logic của Aiken** và **xây dựng offchain code** trong Next.js để tương tác với smart contract.  
-Bạn sẽ thực hành viết **test case**, **mock giao dịch**, và **triển khai API backend** để mint/buy/withdraw NFT trên marketplace.
+## 📝 Bài tập 1: Tạo file test cho smart contract Marketplace
+
+### Đề bài
+Khởi tạo file test để kiểm thử logic của smart contract Marketplace viết bằng Aiken.
+
+### Yêu cầu
+- Tạo file `marketplace.test` trong thư mục `tests/`.  
+- Viết test đầu tiên kiểm tra khi người mua gửi đúng số ADA, giao dịch hợp lệ.  
+- Dùng lệnh `aiken test` để chạy.
+
+### Cách giải
+Dùng lệnh tạo file test trong dự án Aiken và viết test cơ bản với `expect true`.
+
+### Đáp án
+```rust
+test buy_successful {
+  expect true == buy(100, 100)
+}
+```
 
 ---
 
-## 📝 Bài tập 1: Viết test cơ bản cho chức năng Buy
+## 📝 Bài tập 2: Viết test case cho hàm `buy` khi người mua gửi sai số tiền
 
 ### Đề bài
-Tạo test kiểm tra điều kiện “Buy” của validator để xác minh người mua phải trả đủ ADA.
+Kiểm tra trường hợp giao dịch không hợp lệ khi người mua gửi sai số tiền.
 
 ### Yêu cầu
-- Tạo file `tests/marketplace_buy_test.ak`.  
-- Viết test cho trường hợp:
-  - Người mua trả đúng giá → ✅ PASS.  
-  - Người mua trả thiếu giá → ❌ FAIL.  
-- Sử dụng module `aiken/test` để chạy test.
+- Thêm test mới trong `marketplace.test`.  
+- Kiểm tra giá trị ADA nhỏ hơn giá NFT.  
+- Kết quả mong đợi: test phải **fail**.
 
 ### Cách giải
-1. Tạo thư mục `tests/` trong dự án Aiken.  
-2. Khai báo module test:
-   ```aiken
-   use aiken/test
-
-   test buy_should_pass_when_paid_enough() {
-     let datum = MarketplaceDatum { seller: "addr_seller", price: 10000000, policy_id: "123", asset_name: "token" }
-     let tx = build_tx(paid_to_seller: 11000000)
-     expect is_buy_valid(tx, datum)
-   }
-   ```
-
-3. Viết thêm test fail khi trả thiếu:
-   ```aiken
-   test buy_should_fail_when_paid_less() {
-     let datum = MarketplaceDatum { seller: "addr_seller", price: 10000000, policy_id: "123", asset_name: "token" }
-     let tx = build_tx(paid_to_seller: 5000000)
-     expect !is_buy_valid(tx, datum)
-   }
-   ```
+So sánh giá trị `ada_sent` khác `nft_price` trong test.
 
 ### Đáp án
-Chạy lệnh:
+```rust
+test buy_fail_incorrect_amount {
+  expect false == buy(80, 100)
+}
+```
+
+---
+
+## 📝 Bài tập 3: Cấu hình Mesh SDK và Blockfrost Provider
+
+### Đề bài
+Cài đặt và cấu hình môi trường offchain với Mesh SDK.
+
+### Yêu cầu
+- Cài Mesh SDK bằng npm.  
+- Tạo file `.env` lưu Project ID của Blockfrost.  
+- Cấu hình provider trong code.
+
+### Cách giải
+Cài Mesh và tạo provider với Project ID từ Blockfrost.
+
+### Đáp án
 ```bash
-aiken test
-```
-Kết quả hiển thị:  
-✅ `buy_should_pass_when_paid_enough` passed.  
-❌ `buy_should_fail_when_paid_less` failed (đúng như mong đợi).
-
----
-
-## 📝 Bài tập 2: Viết test cho chức năng Withdraw/Update
-
-### Đề bài
-Kiểm tra xem chỉ **seller** mới có thể thực hiện `WithdrawOrUpdate`.
-
-### Yêu cầu
-- Test pass khi `seller` nằm trong `tx.signatories`.  
-- Test fail khi người ký khác không phải `seller`.
-
-### Cách giải
-```aiken
-test withdraw_should_pass_for_seller() {
-  let datum = MarketplaceDatum { seller: "addr_seller", price: 10000000, policy_id: "123", asset_name: "token" }
-  let tx = build_tx(signatories: ["addr_seller"])
-  expect is_withdraw_valid(tx, datum)
-}
-
-test withdraw_should_fail_for_other_user() {
-  let datum = MarketplaceDatum { seller: "addr_seller", price: 10000000, policy_id: "123", asset_name: "token" }
-  let tx = build_tx(signatories: ["addr_buyer"])
-  expect !is_withdraw_valid(tx, datum)
-}
+npm install @meshsdk/core @meshsdk/common
 ```
 
-### Đáp án
-Khi chạy `aiken test`, test thứ hai sẽ fail đúng logic, xác nhận validator chỉ cho phép seller rút/cập nhật NFT.
-
----
-
-## 📝 Bài tập 3: Test tổng hợp validator
-
-### Đề bài
-Viết test gọi trực tiếp validator `marketplace` với cả hai loại redeemer (`Buy` và `WithdrawOrUpdate`).
-
-### Yêu cầu
-- Test 1: Redeemer = `Buy`, người mua trả đủ ADA → ✅ PASS.  
-- Test 2: Redeemer = `WithdrawOrUpdate`, seller ký giao dịch → ✅ PASS.  
-- Test 3: Redeemer = `Buy`, người mua trả thiếu ADA → ❌ FAIL.
-
-### Cách giải
-```aiken
-test validator_should_validate_buy() {
-  let datum = MarketplaceDatum { seller: "addr_seller", price: 10000000, policy_id: "123", asset_name: "token" }
-  let tx = build_tx(paid_to_seller: 11000000)
-  let ctx = ScriptContext { tx }
-  expect marketplace(datum, Buy, ctx)
-}
-
-test validator_should_validate_withdraw() {
-  let datum = MarketplaceDatum { seller: "addr_seller", price: 10000000, policy_id: "123", asset_name: "token" }
-  let tx = build_tx(signatories: ["addr_seller"])
-  let ctx = ScriptContext { tx }
-  expect marketplace(datum, WithdrawOrUpdate, ctx)
-}
-```
-
-### Đáp án
-Cả hai test đầu pass, test thứ ba fail → chứng minh validator hoạt động đúng theo logic mong đợi.
-
----
-
-## 📝 Bài tập 4: Tạo API Offchain cho giao dịch Buy
-
-### Đề bài
-Tạo endpoint `/api/marketplace/buy` trong Next.js để build giao dịch mua NFT thông qua MeshJS.
-
-### Yêu cầu
-- Nhận dữ liệu từ client: `buyerAddress`, `sellerAddress`, `price`, `policyId`, `assetName`.  
-- Sử dụng `Transaction` của MeshJS để tạo giao dịch.  
-- Trả về `unsignedTx` cho client ký.
-
-### Cách giải
-Tạo file `app/api/marketplace/buy/route.ts`:
 ```ts
-import { NextResponse } from "next/server";
+import { BlockfrostProvider } from "@meshsdk/core";
+
+const provider = new BlockfrostProvider("mainnet", process.env.BLOCKFROST_ID);
+```
+
+---
+
+## 📝 Bài tập 4: Viết hàm `sale()` trong offchain code
+
+### Đề bài
+Tạo hàm TypeScript `sale()` để đăng bán NFT trên marketplace.
+
+### Yêu cầu
+- Truyền vào tham số: `asset`, `price`, `sellerAddress`.  
+- Dùng Mesh SDK để tạo giao dịch có metadata và output kèm datum.  
+- Trả về hash giao dịch sau khi submit.
+
+### Cách giải
+Dùng Mesh SDK với `Transaction().sendAssets().attachMetadata()` và `submit()`.
+
+### Đáp án
+```ts
 import { Transaction } from "@meshsdk/core";
 
-export async function POST(request: Request) {
-  const { buyerAddress, sellerAddress, price, policyId, assetName } = await request.json();
-  try {
-    const tx = new Transaction();
-    tx.sendLovelace({ address: sellerAddress }, price);
-    tx.sendAssets({ address: buyerAddress }, [{ unit: `${policyId}${assetName}`, quantity: "1" }]);
-    const unsignedTx = await tx.build();
-    return NextResponse.json({ unsignedTx });
-  } catch (err) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
-  }
+async function sale(asset, price, sellerAddress) {
+  const tx = new Transaction({ initiator: sellerAddress })
+    .sendAssets({ address: MARKETPLACE_ADDR, assets: { [asset]: 1 } })
+    .attachMetadata(721, { price })
+    .build();
+
+  const txHash = await tx.submit();
+  return txHash;
 }
 ```
 
-### Đáp án
-Client gửi `POST /api/marketplace/buy`, server trả về `unsignedTx`, sau đó client ký và submit bằng `wallet.submitTx()`.
-
 ---
 
-## 📝 Bài tập 5: Kết nối test onchain và offchain
+## 📝 Bài tập 5: Kiểm thử giao dịch offchain bằng Vitest
 
 ### Đề bài
-Tạo test case tích hợp để kiểm tra validator hoạt động đồng bộ giữa **Aiken logic** và **Next.js offchain API**.
+Viết test kiểm thử giao dịch `sale()` bằng Vitest.
 
 ### Yêu cầu
-- Gọi API `/api/marketplace/buy`.  
-- Dùng script hash của validator để attach vào giao dịch.  
-- Gửi giao dịch testnet và kiểm tra `TxHash` trên [Cardanoscan](https://preprod.cardanoscan.io).
+- Cài Vitest và viết test đơn giản gọi `sale()`.  
+- In ra `txHash` nếu giao dịch thành công.  
+- Sử dụng mô phỏng (mock) provider khi test.
 
 ### Cách giải
-1. Lấy script hash sau khi compile:
-   ```bash
-   aiken build
-   ```
-2. Trong API, thêm script hash:
-   ```ts
-   tx.attachSpendingValidator({ type: "PlutusV2", script: validatorCompiled });
-   ```
-3. Client ký và gửi giao dịch, kiểm tra `txHash` trả về.
+Sử dụng `vi.fn()` để tạo mock provider và xác minh hàm được gọi.
 
 ### Đáp án
-Nếu validator và offchain code hoạt động chính xác, `TxHash` xuất hiện trên Cardanoscan → xác minh thành công toàn bộ quy trình.
+```ts
+import { describe, it, expect, vi } from "vitest";
+import { sale } from "./marketplace";
+
+describe("Marketplace sale", () => {
+  it("should return tx hash", async () => {
+    const mockProvider = vi.fn().mockResolvedValue("mockTxHash123");
+    const result = await sale("asset1", 100, "addr_test1...");
+    expect(result).toBeDefined();
+  });
+});
+```
 
 ---
-
-✅ **Tổng kết**
-Qua 5 bài tập này, bạn sẽ hiểu cách:
-- Viết test case Aiken cho từng hành vi logic.  
-- Mô phỏng tình huống giao dịch hợp lệ / không hợp lệ.  
-- Xây dựng API backend kết nối MeshJS và Aiken.  
-- Kiểm tra tích hợp end-to-end trên testnet.
