@@ -1,4 +1,4 @@
-# PVideo 09: Analyzing Ideas for an NFT Marketplace
+# Video 09: Analyzing Ideas for an NFT Marketplace
 
 Bài viết này dựa trên nội dung video hướng dẫn phân tích ý tưởng cho một ứng dụng NFT Marketplace trên blockchain Cardano. Nội dung được thiết kế để giúp người mới bắt đầu (beginner) hiểu rõ về các chức năng chính, logic hợp đồng thông minh, và cách thiết kế giao diện người dùng (UI). Chúng ta sẽ phân tích các marketplace thực tế như JPG.Store, thiết kế UI cơ bản, và demo các chức năng cốt lõi. Bài viết này là phần đầu tiên trong chuỗi 6 video về xây dựng dApp NFT Marketplace, tập trung vào phân tích ý tưởng và thiết kế UI. Các phần sau sẽ bao gồm viết smart contract, test, tích hợp frontend, và triển khai production.
 
