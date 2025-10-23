@@ -1,72 +1,159 @@
-# Video 08:  Introduction eUTxO model (datums, redeemers, etc.)
+# Video 12: Writing Test Cases and Offchain Code for Smart Contracts
 
----
+Bài viết này hướng dẫn bạn cách viết test cases cho hợp đồng thông minh NFT Marketplace sử dụng ngôn ngữ Aiken, cũng như migrate logic sang offchain code bằng thư viện MeshJS (MJS) để tương tác thực tế trên blockchain Cardano. Nội dung dựa trên video hướng dẫn, tập trung vào các trường hợp test và xây dựng giao dịch (sale, buy, withdraw, update). Bài viết được thiết kế để bạn có thể thực hiện mà không cần xem video.
 
-**1. Ôn tập về mô hình EUTxO (Extended Unspent Transaction Output)**
+## Điều Kiện Tiên Quyết
+- Aiken phiên bản 1.1.19 trở lên đã cài đặt.
+- Node.js và npm để quản lý dự án TypeScript.
+- Thư viện MeshJS phiên bản 1.8.14, Vitest cho testing, và dotenv cho biến môi trường.
+- Ví Cardano (như Eternl) với địa chỉ testnet và một số ADA để test giao dịch.
+- Project ID từ Blockfrost để kết nối blockchain testnet.
 
-- **Blocks & Transactions**:
-    - Giải thích cơ bản về cách blockchain Cardano tổ chức dữ liệu qua các khối và giao dịch.
-    - Vai trò của giao dịch trong việc chuyển giá trị và thực thi logic smart contract.
-- **Outputs và Inputs**:
-    - Định nghĩa Output (đầu ra chưa sử dụng - UTXO) và Input (tham chiếu đến UTXO để tiêu dùng).
-    - Sự khác biệt giữa UTXO truyền thống (Bitcoin) và EUTxO (Cardano).
-- **Addresses**:
-    - Các loại địa chỉ (address) trên Cardano: địa chỉ ví thông thường và địa chỉ script.
-    - Mối liên hệ giữa địa chỉ và smart contract.
-- **Scripts, Datums và Redeemers**:
-    - Scripts: Logic điều khiển việc tiêu dùng UTXO (validator script).
-    - Datums: Dữ liệu gắn liền với UTXO để lưu trữ trạng thái hợp đồng.
-    - Redeemers: Dữ liệu cung cấp bởi người dùng để đáp ứng điều kiện của script.
+## Bước 1: Viết Test Cases Trong Aiken
+Trong Aiken, chúng ta tập trung vào validator `spend` với hai redeemer: `Buy` và `WithdrawOrUpdate`. Test cases kiểm tra các trường hợp thành công và thất bại.
 
----
+1. **Tạo File Test**:
+   - Tạo file `marketplace_test.aiken` trong dự án Aiken.
 
-**2. Aiken là gì?**
+2. **Định Nghĩa Datum Mẫu**:
+   ```aiken
+   fn mock_datum(id: Int) -> MarketplaceDatum {
+     MarketplaceDatum {
+       seller: mock_address(0),
+       price: 200_000_000, // 200 ADA
+       policy_id: mock_policy_id(id),
+       asset_name: "test"
+     }
+   }
+   ```
 
-- **Giới thiệu tổng quan và lịch sử**:
-    - So sánh Aiken với các công cụ trước đó như Plutus (dựa trên Haskell): sự khác biệt về cách tiếp cận và mục tiêu.
-    - Lý do ra đời của Aiken: tối ưu hóa quá trình phát triển smart contract trên Cardano.
-- **Điểm mạnh của Aiken**:
-    - Hiệu năng: Tối ưu hóa việc biên dịch và thực thi trên blockchain.
-    - Dễ sử dụng: Ngôn ngữ thân thiện hơn so với Haskell, cú pháp đơn giản, dễ học.
-    - Tích hợp tốt với hệ sinh thái Cardano: Công cụ dòng lệnh (CLI) và khả năng kiểm thử.
-- **Trình biên dịch của Aiken**:
-    - Quy trình biên dịch: Từ mã Aiken sang UPLC (Untyped Plutus Core) – ngôn ngữ cấp thấp mà Cardano sử dụng.
-    - CBOR Hex:
-        - Giải thích đây là định dạng mã hóa dữ liệu (Compact Binary Object Representation) được sử dụng để đưa smart contract lên blockchain.
-        - Ý nghĩa: Đảm bảo tính nhỏ gọn và tương thích với node Cardano.
+3. **Hàm Tạo Giao Dịch Test**:
+   - Tạo các hàm như `get_buy_tx`, `get_withdraw_tx`, `get_update_tx` để mô phỏng giao dịch với các tham số (e.g., only_one_input_from_script, is_payment_valid, is_seller_signed).
 
----
+4. **Các Test Cases**:
+   - Test thành công cho `Buy` (chỉ một input, thanh toán đúng).
+   - Test thất bại cho `Buy` (nhiều input, thanh toán không đủ).
+   - Test thành công cho `Withdraw` và `Update` (người ký là seller).
+   - Test thất bại cho `Withdraw` và `Update` (người ký không phải seller).
+   
+   Ví dụ test:
+   ```aiken
+   test success_buy() {
+     let tx = get_buy_tx(true, true)
+     marketplace.validator(mock_datum(0), Buy, tx.reference, tx)
+   }
 
-**3. Kỹ thuật lập trình với Aiken**
+   test fail_buy_with_multiple_inputs() {
+     let tx = get_buy_tx(false, true)
+     !marketplace.validator(mock_datum(0), Buy, tx.reference, tx)
+   }
+   ```
 
-- **Cú pháp cơ bản**:
-    - **Data Types**: Cách định nghĩa và sử dụng các kiểu dữ liệu (ví dụ: structs, enums).
-    - **Functions**: Cấu trúc hàm, tham số, giá trị trả về.
-    - **Câu lệnh điều kiện**: Sử dụng if-else trong logic smart contract.
-- **Các từ khóa và cú pháp quan trọng**:
-    - validator: Định nghĩa validator để kiểm soát việc tiêu dùng UTXO.
-    - datum và redeemer: Cách khai báo và sử dụng trong validator.
-    - Một số hàm tích hợp phổ biến (ví dụ: kiểm tra chữ ký, thời gian).
-- **Validator Handlers**:
-    - Giới thiệu vai trò của validator trong smart contract.
-    - Cách viết validator: Đầu vào (datum, redeemer, context) và logic xác thực.
-- **Viết và chạy Unit Test**:
-    - Tầm quan trọng của việc kiểm thử smart contract trước khi triển khai.
-    - Sử dụng framework kiểm thử của Aiken: Viết test case, mô phỏng giao dịch, kiểm tra kết quả.
+5. **Chạy Test**:
+   - Chạy lệnh `aiken check` để kiểm tra tất cả test cases pass.
 
----
+## Bước 2: Migrate Sang Offchain Code Với MeshJS
+Chuyển logic sang TypeScript sử dụng MeshJS để xây dựng giao dịch thực tế.
 
-**4. Ví dụ và Demo thực tế**
+1. **Khởi Tạo Dự Án**:
+   - Chạy `npm init -y` để tạo `package.json`.
+   - Cài đặt thư viện: `npm install @meshsdk/core@1.8.14 vitest dotenv`.
+   - Tạo file `.gitignore` (thêm `node_modules` và `.env`).
+   - Tạo file `.env` với `BLOCKFROST_PROJECT_ID` và mnemonic cho ví test.
 
-- **Tạo một dự án Aiken mới**:
-    - Hướng dẫn cài đặt Aiken và khởi tạo dự án bằng CLI.
-    - Phân tích cấu trúc dự án và các tệp được tạo ra sau khi build (ví dụ: tệp UPLC, CBOR Hex).
-- **Ví dụ thực tế: Hợp đồng Lock ADA đơn giản (Hello World)**:
-    - Mục tiêu: Khóa một lượng ADA và chỉ cho phép mở khóa với điều kiện cụ thể (ví dụ: chữ ký hợp lệ).
-    - **Phân tích**:
-        - Đầu vào: Datum (trạng thái hợp đồng), Redeemer (điều kiện mở khóa), Context (thông tin giao dịch).
-        - Đầu ra: Logic validator kiểm tra điều kiện và cho phép/khóa ADA.
-    - **Triển khai demo**:
-        - Viết mã Aiken cho hợp đồng.
-        - Build và kiểm tra đầu ra (UPLC, CBOR Hex).
-        - Mô phỏng giao dịch trên testnet Cardano (nếu có thể).
+2. **Cấu Trúc Dự Án**:
+   - Tạo folder `test` với `marketplace.test.ts`.
+   - Tạo folder `src` với `mesh_adapter.ts` và `index.ts`.
+
+3. **File `mesh_adapter.ts`** (Adapter cho MeshJS):
+   ```typescript
+   import { MeshTxBuilder, BrowserWallet } from '@meshsdk/core';
+   import * as dotenv from 'dotenv';
+
+   dotenv.config();
+
+   export class MeshAdapter {
+     wallet: BrowserWallet;
+     provider: any; // BlockfrostProvider
+     meshBuilder: MeshTxBuilder;
+
+     constructor(wallet: BrowserWallet, provider: any) {
+       this.wallet = wallet;
+       this.provider = provider;
+       this.meshBuilder = new MeshTxBuilder({ network: process.env.BLOCKFROST_PROJECT_ID.startsWith('preprod') ? 0 : 1 });
+       // Load marketplace compiled code from Aiken build
+       this.marketplaceCompiledCode = '/* Compiled code from Aiken */';
+     }
+
+     // Các hàm helper: getUtxosForTx, getUtxoByTxHash, readDatum, etc.
+   }
+   ```
+
+4. **File `index.ts`** (Marketplace Contract):
+   ```typescript
+   import { MeshAdapter } from './mesh_adapter';
+
+   export class MarketplaceContract extends MeshAdapter {
+     async sale(unit: string, priceInLovelace: number): Promise<string> {
+       // Build tx: add output to script address, attach datum
+       // Return unsigned tx as hex
+     }
+
+     async buy(unit: string): Promise<string> {
+       // Query UTXO from script, build tx with input from script, redeemer Buy
+     }
+
+     async withdraw(unit: string): Promise<string> {
+       // Build tx to withdraw UTXO back to wallet
+     }
+
+     async update(unit: string, newPriceInLovelace: number): Promise<string> {
+       // Build tx to update datum with new price
+     }
+   }
+   ```
+
+5. **File `marketplace.test.ts`** (Test Offchain):
+   - Sử dụng Vitest để test các hàm sale, buy, withdraw, update.
+   - Khởi tạo wallet và provider từ `.env`.
+   - Test bằng cách build unsigned tx, sign, submit, và kiểm tra tx hash.
+
+   Ví dụ:
+   ```typescript
+   import { describe, it, expect, beforeEach } from 'vitest';
+   import { MarketplaceContract } from '../src/index';
+
+   describe('Marketplace Tests', () => {
+     let contract: MarketplaceContract;
+
+     beforeEach(async () => {
+       // Init wallet and provider
+     });
+
+     it('should sale NFT', async () => {
+       const unsignedTx = await contract.sale('unit_here', 100_000_000);
+       // Sign and submit, expect tx hash length 64
+     });
+
+     // Tương tự cho buy, withdraw, update
+   });
+   ```
+
+6. **Chạy Test**:
+   - Cập nhật `package.json` scripts: `"test": "vitest run"`.
+   - Chạy `npm run test` để kiểm tra.
+
+## Giải Thích Tổng Quan
+- **Test Trong Aiken**: Kiểm tra logic validator với các trường hợp thành công/thất bại.
+- **Offchain Với MeshJS**: Xây dựng giao dịch thực tế, sử dụng Blockfrost để query blockchain, và xử lý datum/redeemer.
+- Các hàm chính: `sale` (liệt kê NFT), `buy` (mua), `withdraw` (rút/delisting), `update` (cập nhật giá).
+
+## Bước 6: Kiểm Tra Và Debug
+- Sử dụng console.log để xem unsigned tx.
+- Kiểm tra giao dịch trên explorer như Preprod Cardano Scan.
+- Xử lý lỗi: Đảm bảo UTXO tồn tại, datum đúng, và signer hợp lệ.
+
+## Kết Luận
+Bài viết cung cấp hướng dẫn hoàn chỉnh để test và triển khai offchain cho NFT Marketplace. Trong các bước tiếp theo, bạn có thể tích hợp vào ứng dụng Next.js với API để người dùng tương tác qua ví browser.
+
+Nếu cần thêm chi tiết, tham khảo tài liệu MeshJS tại [https://meshjs.dev](https://meshjs.dev) hoặc Aiken tại [https://aiken-lang.org](https://aiken-lang.org).
