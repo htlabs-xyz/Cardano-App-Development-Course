@@ -5,6 +5,6 @@ build/
 # Aiken's default documentation export
 docs/
 
-node_modules
+node_modules/
 
 .env

@@ -1,20 +1,14 @@
 {
   "name": "aiken-nft-marketplace",
-  "version": "1.0.0",
-  "description": "Write validators in the `validators` folder, and supporting functions in the `lib` folder using `.ak` as a file extension.",
-  "main": "index.js",
-  "directories": {
-    "lib": "lib",
-    "test": "tests"
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest"
   },
-  "scripts": {
-    "test": "vitest run"
+  "peerDependencies": {
+    "typescript": "^5"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "@meshsdk/core": "^1.8.14",
-    "dotenv": "^17.2.3",
-    "vitest": "^3.2.4"
+    "@meshsdk/core": "1.8.14"
   }
 }
