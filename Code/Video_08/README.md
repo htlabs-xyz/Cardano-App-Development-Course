@@ -1,6 +1,5 @@
 
-This is Video_08 from a Cardano App Development Course. This directory contains a simple Aiken smart contract project demonstrating a "Hello World" validator on the Cardano blockchain. The repository is part of a larger course with multiple video lessons (Video_02 through Video_13), where earlier videos cover Next.js + MeshSDK integration, and later videos (like Video_12) cover full marketplace implementations.
-
+This is Video_08 from a Cardano App Development Course. This directory contains a simple Aiken smart contract project demonstrating a "Hello World" validator on the Cardano blockchain. Videos cover Next.js + MeshSDK integration.
 ## Build Commands
 
 ### Compile contracts
