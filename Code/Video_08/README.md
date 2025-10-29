@@ -75,15 +75,6 @@ Tests are written inline using the `test` keyword with mock data:
 - **Dependencies:** `aiken-lang/stdlib` v3.0.0
 - Network configuration can be set in `[config.default]` section or via environment modules in `env/`
 
-## Development Workflow
-
-1. **Write validators** in `validators/` with `.ak` extension
-2. **Write shared functions** in `lib/` if needed across multiple validators
-3. **Add tests** inline using `test` keyword or in separate test files
-4. **Run tests** with `aiken check` to validate logic
-5. **Build** with `aiken build` to generate `plutus.json` for off-chain integration
-6. **Format** with `aiken fmt` before committing
-
 ## Integration with Off-chain Code
 
 After building (`aiken build`), the generated `plutus.json` contains:
