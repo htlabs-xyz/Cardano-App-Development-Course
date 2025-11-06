@@ -1,4 +1,4 @@
-# 📘 Video 16: Finalizing and Deploying the Marketplace to Vercel
+# 📘 Video 14: Finalizing and Deploying the Marketplace to Vercel
 
 ## 📝 Bài tập 1: Tạo file cấu hình môi trường `.env.local`
 
